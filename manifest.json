@@ -1,0 +1,10 @@
+{
+	"id": "obsidian-daily-roadmap",
+	"name": "Day Planning",
+	"version": "0.0.1",
+	"minAppVersion": "0.15.0",
+	"description": "A plugin for day planning",
+	"author": "caasion",
+	"authorUrl": "https://github.com/caasion",
+	"isDesktopOnly": false
+}
