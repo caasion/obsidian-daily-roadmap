@@ -1,0 +1,2 @@
+export const PLAN_PARSER_REGEX_CREATOR = (startLabel: string, endLabel: string) =>
+  new RegExp(`- \[(.)\] (?<task>.*?) \\${startLabel} (?<start>\d{1,2}:\d{1,2}) \\${endLabel} (?<end>\d{1,2}:\d{1,2})`, 'gmi')

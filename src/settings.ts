@@ -8,22 +8,23 @@ export interface DailyRoadmapSettings {
   timelineClock: boolean;
   timelineNowAndNext: boolean;
   timelineZoomLevel: number;
+  timelineRefreshRate: number;
   //statusBar
   statusBarCircularProgress: boolean;
   statusBarNowAndNext: boolean;
   showTaskNotification: boolean;
   //parsing
-  taskTimeMatch: string; //'Front', 'Back', 'Regex'
-  taskTimeType: string; //'Start', 'End', 'Both'
+  taskTimeMatch: string;
+  taskTimeType: string;
   taskStartTimeSymbol?: string; 
   taskEndTimeSymbol?: string;
-  taskTimeRegex?: string; // If time type is 'both', $1 is start time, $2 is end time
+  taskTimeRegex?: string;
   // file modification
-  taskAutoComplete: string; //'All', 'Command', 'Marked' + option, 'None' 
+  taskAutoComplete: string;
   taskAutoCompleteMark?: string;
 }
 
-export const DEFAULT_SETTINGS: DailyRoadmapSettings = {
+export const DEFAULT_SETTINGS: Partial<DailyRoadmapSettings> = {
   timelineClock: true,
   timelineNowAndNext: true,
   timelineZoomLevel: 2,
@@ -32,10 +33,22 @@ export const DEFAULT_SETTINGS: DailyRoadmapSettings = {
   statusBarNowAndNext: false,
   showTaskNotification: false,
   //parsing
-  taskTimeMatch: 'Front', //'Front', 'Back', 'Regex'
+  taskTimeMatch: 'Front',
   taskTimeType: 'Start',
   // file modification
-  taskAutoComplete: 'None', //'All', 'Marked' + option, 'None' 
+  taskAutoComplete: 'None',
+}
+
+const taskTimeMatchOptions: Record<string, string> = {
+  front: "Front",
+  end: "End",
+  regex: "Regex",
+}
+
+const taskTimeType: Record<string, string> = {
+  start: "Start Time",
+  end: "End Time",
+  both: "Both",
 }
 
 export class DailyRoadmapSettingTab extends PluginSettingTab {
@@ -51,20 +64,14 @@ export class DailyRoadmapSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
+		containerEl.createEl('h2', {text: 'Daily Roadmap Settings'});
 
     new Setting(containerEl)
       .setName('Task Time Match')
       .setDesc('Where to match for task time')
       .addDropdown((dropdown) => {
-        const taskTimeMatch: Record<string, string> = {
-          front: "Front",
-          end: "End",
-          regex: "Regex",
-        }
-
         dropdown
-          .addOptions(taskTimeMatch)
+          .addOptions(taskTimeMatchOptions)
           .setValue(this.plugin.settings.taskTimeMatch)
           .onChange(async (value) => {
             this.plugin.settings.taskTimeMatch = value;
@@ -76,12 +83,6 @@ export class DailyRoadmapSettingTab extends PluginSettingTab {
       .setName('Task Time Type')
       .setDesc('What the time in a task indicates')
       .addDropdown((dropdown) => {
-        const taskTimeType: Record<string, string> = {
-          start: "Start Time",
-          end: "End Time",
-          both: "Both",
-        }
-
         dropdown
           .addOptions(taskTimeType)
           .setValue(this.plugin.settings.taskTimeType)
