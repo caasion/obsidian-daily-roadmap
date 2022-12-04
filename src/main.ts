@@ -1,4 +1,6 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, TFile } from 'obsidian';
+import moment from 'moment';
+import { App, Editor, MarkdownView, MetadataCache, Modal, Notice, Plugin, TFile, Vault } from 'obsidian';
+import { createDailyNote, getAllDailyNotes, getDailyNote } from 'obsidian-daily-notes-interface';
 import DailyRoadmapFile from './file';
 import DailyRoadmapParser from './parser';
 import { DailyRoadmapSettings, DailyRoadmapSettingTab, DEFAULT_SETTINGS } from './settings'
@@ -7,22 +9,31 @@ import { DailyRoadmapSettings, DailyRoadmapSettingTab, DEFAULT_SETTINGS } from '
 export default class DailyRoadmap extends Plugin {
 	settings: DailyRoadmapSettings;
   file: DailyRoadmapFile;
-  parser: DailyRoadmapParser
+  parser: DailyRoadmapParser;
+  vault: Vault;
+  cache: MetadataCache;
 
 	async onload() {
 		await this.loadSettings();
     this.file = new DailyRoadmapFile(this.app.vault, this.settings)
     this.parser = new DailyRoadmapParser(this.settings)
+    this.vault = this.app.vault;
 
 		this.addCommand({
 			id: 'basic-task-parsing',
 			name: 'Basic Parsing of a Task',
 			callback: async () => {
-				const fileContents = await this.file.getFileContents("Testing.md")
-        if (fileContents) {
-          const parsedFileContents = this.parser.parseFileIntoTasks(fileContents)
-          console.log(parsedFileContents)
+				let file = getDailyNote(moment(), getAllDailyNotes());
+        if (!file) {
+          file = await createDailyNote(moment());
         }
+        console.log(file)
+        console.log(await this.vault.cachedRead(file))
+        // TODO: Get the contents of the file i retrieved
+        // if (fileContents) {
+        //   const parsedFileContents = this.parser.parseFileIntoTasks(fileContents)
+        //   console.log(parsedFileContents)
+        // }
         
 		}});
 

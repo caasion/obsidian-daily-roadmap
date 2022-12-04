@@ -1,6 +1,6 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import DailyRoadmap from "./main";
-import { getAllDailyNotes, getDailyNote, getDailyNoteSettings } from "obsidian-daily-notes-interface";
+import { getDailyNote} from "obsidian-daily-notes-interface";
 
 
 export interface DailyRoadmapSettings {
